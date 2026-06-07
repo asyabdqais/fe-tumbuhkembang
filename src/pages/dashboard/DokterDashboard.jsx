@@ -9,6 +9,68 @@ import {
 import toast from 'react-hot-toast';
 import Skeleton, { CardListSkeleton } from '../../components/ui/Skeleton';
 import PageHeader from '../../components/ui/PageHeader';
+const RekomendasiGiziRenderer = ({ source }) => {
+  if (!source) return null;
+
+  if (source.includes('<div') || source.includes('<p>') || source.includes('<ul')) {
+    return <div dangerouslySetInnerHTML={{ __html: source }} />;
+  }
+
+  const sections = [];
+  const parts = source.split(/(?=###\s+)/g);
+  
+  parts.forEach((part) => {
+    const trimmed = part.trim();
+    if (!trimmed) return;
+
+    const lines = trimmed.split('\n');
+    const headingLine = lines[0];
+    const contentLines = lines.slice(1);
+    const content = contentLines.join('\n').trim();
+
+    if (headingLine.startsWith('###')) {
+      const titleWithEmoji = headingLine.replace(/^###\s*/, '').trim();
+      const emojiRegex = /^([\uD800-\uDBFF][\uDC00-\uDFFF]|[\u2600-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF]|\uD83E[\uDD00-\uDFFF]|[^\w\s\d,.:;?!()\-+_*'"])\s*(.*)$/u;
+      const match = titleWithEmoji.match(emojiRegex);
+      let emoji = '📋';
+      let title = titleWithEmoji;
+      
+      if (match) {
+        emoji = match[1];
+        title = match[2];
+      }
+      
+      sections.push({ emoji, title, content });
+    } else {
+      sections.push({ emoji: '📋', title: 'Rekomendasi', content: trimmed });
+    }
+  });
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {sections.map((sec, idx) => {
+        const isDanger = sec.emoji === '🚨' || sec.title.toLowerCase().includes('bahaya');
+        return (
+          <div 
+            key={idx} 
+            className={`gizi-section ${isDanger ? 'gizi-section-danger' : ''}`}
+          >
+            <div className="gizi-section-icon">{sec.emoji}</div>
+            <div className="gizi-section-body">
+              <h4>{sec.title}</h4>
+              <div data-color-mode="light" className="recipe-content-inner">
+                <MDEditor.Markdown 
+                  source={sec.content} 
+                  style={{ backgroundColor: 'transparent', color: isDanger ? '#9f1239' : '#334155', fontSize: '13.5px' }} 
+                />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 const DokterDashboard = () => {
   const [cases, setCases] = useState([]);
@@ -192,23 +254,44 @@ const DokterDashboard = () => {
                 </button>
               </div>
 
-              <div style={{ flex: 1 }}>
-                <label className="field-label" style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
-                  <Sparkles size={14} color="#16a34a" />
-                  Edit Rekomendasi Menu Gizi & Intervensi (Markdown)
-                </label>
-                <div data-color-mode="light" className="editor-shell" style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
-                  <MDEditor
-                    value={rekomendasi}
-                    onChange={setRekomendasi}
-                    height={300}
-                    preview="edit"
-                    style={{ fontFamily: "'Inter', sans-serif" }}
-                  />
+              <div style={{ flex: 1, display: 'flex', gap: '20px', flexDirection: 'column' }}>
+                <div>
+                  <label className="field-label" style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
+                    <Sparkles size={14} color="#16a34a" />
+                    Edit Rekomendasi Menu Gizi & Intervensi (Markdown)
+                  </label>
+                  <div data-color-mode="light" className="editor-shell" style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
+                    <MDEditor
+                      value={rekomendasi}
+                      onChange={setRekomendasi}
+                      height={200}
+                      preview="edit"
+                      style={{ fontFamily: "'Inter', sans-serif" }}
+                    />
+                  </div>
+                  <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px' }}>
+                    Konten berformat Teks/Markdown biasa. Tambahkan <strong>**tebal**</strong> atau <em>*miring*</em> jika perlu.
+                  </p>
                 </div>
-                <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px' }}>
-                  Konten berformat Teks/Markdown biasa. Tambahkan <strong>**tebal**</strong> atau <em>*miring*</em> jika perlu.
-                </p>
+
+                <div>
+                  <label className="field-label" style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
+                    Preview Visual (Sama dengan tampilan Orang Tua)
+                  </label>
+                  <div 
+                    data-color-mode="light"
+                    className="recipe-content panel-reveal"
+                    style={{
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      background: 'white',
+                      minHeight: '200px'
+                    }}
+                  >
+                    <RekomendasiGiziRenderer source={rekomendasi} />
+                  </div>
+                </div>
               </div>
 
               <div className="alert-box alert-box-amber">
