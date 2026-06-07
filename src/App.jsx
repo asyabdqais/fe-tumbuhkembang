@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from './hooks/useAuthStore';
 import AppRouter from './routes/AppRouter';
 import { Activity } from 'lucide-react';
+import './App.css';
 
 function App() {
   const { checkAuth, isInitializing } = useAuthStore();
