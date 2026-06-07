@@ -3,7 +3,14 @@ import api from '../config/axios';
 
 export const useAuthStore = create((set) => ({
   userRole: localStorage.getItem('user_role') || null,
-  user: JSON.parse(localStorage.getItem('user_data')) || null,
+  user: (() => {
+    try {
+      const data = localStorage.getItem('user_data');
+      return data && data !== 'undefined' ? JSON.parse(data) : null;
+    } catch {
+      return null;
+    }
+  })(),
   isAuthenticated: !!localStorage.getItem('user_role'),
   loading: false,
   isInitializing: true, // true sampai checkAuth pertama kali selesai
