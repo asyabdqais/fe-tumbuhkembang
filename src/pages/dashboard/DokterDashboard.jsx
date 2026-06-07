@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { intervensiService } from '../../services/apiServices';
-import MDEditor from '@uiw/react-md-editor';
+
 import {
   Stethoscope, Sparkles, CheckCircle, AlertTriangle, RefreshCw,
   Baby, ChevronRight,
@@ -196,15 +196,30 @@ const DokterDashboard = () => {
                   <Sparkles size={14} color="#16a34a" />
                   Rekomendasi Menu Gizi & Intervensi AI
                 </label>
-                <div data-color-mode="light" className="editor-shell">
-                  <MDEditor
+                <div style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
+                  <textarea
                     value={rekomendasi}
-                    onChange={setRekomendasi}
-                    height={260}
-                    preview="edit"
-                    style={{ fontFamily: "'Inter', sans-serif" }}
+                    onChange={(e) => setRekomendasi(e.target.value)}
+                    style={{
+                      width: '100%',
+                      height: '260px',
+                      padding: '14px',
+                      fontFamily: "'Inter', monospace",
+                      fontSize: '12px',
+                      lineHeight: 1.6,
+                      color: '#334155',
+                      background: '#f8fafc',
+                      border: 'none',
+                      outline: 'none',
+                      resize: 'vertical',
+                      boxSizing: 'border-box',
+                    }}
+                    placeholder="Rekomendasi HTML dari AI akan muncul di sini..."
                   />
                 </div>
+                <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px' }}>
+                  Konten berformat HTML. Edit langsung jika perlu penyesuaian sebelum divalidasi.
+                </p>
               </div>
 
               <div className="alert-box alert-box-amber">
