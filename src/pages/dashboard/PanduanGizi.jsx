@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { balitaService, intervensiService } from '../../services/apiServices';
+import MDEditor from '@uiw/react-md-editor';
 import { Baby, BookOpen, AlertCircle, Heart } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Skeleton, { CardListSkeleton } from '../../components/ui/Skeleton';
@@ -161,10 +162,9 @@ const PanduanGizi = () => {
                 </div>
               </div>
 
-              <div
-                className="recipe-content"
-                dangerouslySetInnerHTML={{ __html: intervensi.rekomendasi_ai }}
-              />
+              <div data-color-mode="light" className="recipe-content" style={{ padding: '0 8px' }}>
+                <MDEditor.Markdown source={intervensi.rekomendasi_ai} style={{ backgroundColor: 'transparent', color: '#334155' }} />
+              </div>
             </div>
           ) : (
             <div className="result-placeholder" style={{ minHeight: '300px', background: '#ffffff', border: '2px dashed #e2e8f0', borderRadius: '18px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px', textAlign: 'center', gap: '16px' }}>

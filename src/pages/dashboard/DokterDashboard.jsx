@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { intervensiService } from '../../services/apiServices';
+import MDEditor from '@uiw/react-md-editor';
 
 import {
   Stethoscope, Sparkles, CheckCircle, AlertTriangle, RefreshCw,
@@ -191,54 +192,23 @@ const DokterDashboard = () => {
                 </button>
               </div>
 
-              <div style={{ flex: 1, display: 'flex', gap: '20px', flexDirection: 'column' }}>
-                <div>
-                  <label className="field-label" style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
-                    <Sparkles size={14} color="#16a34a" />
-                    Edit Rekomendasi (HTML Asli)
-                  </label>
-                  <div style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
-                    <textarea
-                      value={rekomendasi}
-                      onChange={(e) => setRekomendasi(e.target.value)}
-                      style={{
-                        width: '100%',
-                        height: '180px',
-                        padding: '14px',
-                        fontFamily: "'Inter', monospace",
-                        fontSize: '12px',
-                        lineHeight: 1.6,
-                        color: '#334155',
-                        background: '#f8fafc',
-                        border: 'none',
-                        outline: 'none',
-                        resize: 'vertical',
-                        boxSizing: 'border-box',
-                      }}
-                      placeholder="Rekomendasi HTML dari AI akan muncul di sini..."
-                    />
-                  </div>
-                  <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px' }}>
-                    Edit teks di antara tag HTML jika perlu penyesuaian. Jangan hapus tag `&lt;div class="..."&gt;`.
-                  </p>
-                </div>
-
-                <div>
-                  <label className="field-label" style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
-                    Preview Visual (Sama dengan tampilan Orang Tua)
-                  </label>
-                  <div 
-                    className="recipe-content panel-reveal"
-                    style={{
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      background: 'white',
-                      minHeight: '200px'
-                    }}
-                    dangerouslySetInnerHTML={{ __html: rekomendasi }}
+              <div style={{ flex: 1 }}>
+                <label className="field-label" style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '10px' }}>
+                  <Sparkles size={14} color="#16a34a" />
+                  Edit Rekomendasi Menu Gizi & Intervensi (Markdown)
+                </label>
+                <div data-color-mode="light" className="editor-shell" style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
+                  <MDEditor
+                    value={rekomendasi}
+                    onChange={setRekomendasi}
+                    height={300}
+                    preview="edit"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
                   />
                 </div>
+                <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px' }}>
+                  Konten berformat Teks/Markdown biasa. Tambahkan <strong>**tebal**</strong> atau <em>*miring*</em> jika perlu.
+                </p>
               </div>
 
               <div className="alert-box alert-box-amber">
